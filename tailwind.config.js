@@ -9,7 +9,8 @@ export default {
   	extend: {
   		fontFamily: {
   			Font: ["EduAUVICWANTArrows-VariableFont_wght","sanf-serif"],
-  			customFont: [ "Edu AU VIC WA NT Arrows", "cursive"]
+  			customFont: [ "ClashGrotesk-Variable.woff2", "sans-serif"],
+  			Gist: ["Geist-SemiBold.woff2","sans-serif"]
   		},
   		borderRadius: {
   			lg: 'var(--radius)',
@@ -17,7 +18,8 @@ export default {
   			sm: 'calc(var(--radius) - 4px)'
   		},
   		colors: {
-			customPurple:"rgb(141, 103, 171)",
+  			customPurple: 'rgb(141, 103, 171)',
+  			customBgcolor: 'rgb(17, 25, 39)',
   			background: 'hsl(var(--background))',
   			foreground: 'hsl(var(--foreground))',
   			card: {
@@ -57,6 +59,24 @@ export default {
   				'3': 'hsl(var(--chart-3))',
   				'4': 'hsl(var(--chart-4))',
   				'5': 'hsl(var(--chart-5))'
+  			}
+  		},
+  		animation: {
+  			meteor: 'meteor 5s linear infinite'
+  		},
+  		keyframes: {
+  			meteor: {
+  				'0%': {
+  					transform: 'rotate(215deg) translateX(0)',
+  					opacity: '1'
+  				},
+  				'70%': {
+  					opacity: '1'
+  				},
+  				'100%': {
+  					transform: 'rotate(215deg) translateX(-500px)',
+  					opacity: '0'
+  				}
   			}
   		}
   	}

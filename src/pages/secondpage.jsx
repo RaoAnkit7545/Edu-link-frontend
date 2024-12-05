@@ -1,6 +1,7 @@
 import React, { useEffect, useRef } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
+import AnimatedGridPattern from "@/components/ui/animated-grid-pattern";
 
 gsap.registerPlugin(ScrollTrigger);
 
@@ -33,18 +34,36 @@ function Secondpage() {
   }, []);
 
   return (
-    <div className="w-full h-full bg-zinc-800">
-      <div className="flex items-center gap-28 space-x-10">
-        <div className="h-[700px] w-[550px] rounded-r-full bg-white"></div>
-        <div className="w-[800px]">
+    <div className="w-full h-full bg-customBgcolor relative overflow-hidden">
+      <div className="absolute inset-0 z-0">
+        <AnimatedGridPattern
+          className="absolute inset-0 opacity-50"
+          squares={[
+            { x: 0, y: 0 },
+            { x: 1, y: 0 },
+            { x: 2, y: 0 },
+            { x: 0, y: 1 },
+            { x: 1, y: 1 },
+            { x: 2, y: 1 },
+            { x: 0, y: 2 },
+            { x: 1, y: 2 },
+            { x: 2, y: 2 },
+          ]}
+        />
+      </div>
+      <div className="flex items-center gap-36">
+        <div className="h-[700px] w-[550px] rounded-r-full bg-white "></div>
+        <div className="w-[800px] ml-10">
           <p
             ref={textRef}
-            className="text-2xl md:text-4xl lg:text-5xl font-customFont text-white text-left"
+            className="text-2xl md:text-4xl lg:text-5xl font-Gist text-white text-left"
           >
             Edu-Link:
             <br />
-            Connects you to live teacher interactions and resources, empowering
-            your learning journey anytime, anywhere
+            <span className="lg:text-4xl md:text-3xl text-xl">
+              Connects you to live teacher interactions and resources,
+              empowering your learning journey anytime, anywhere
+            </span>
           </p>
         </div>
       </div>
