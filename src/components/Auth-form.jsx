@@ -1,51 +1,70 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState } from "react";
+import axios from "axios";
 import { Input } from "./ui/input";
 import { cn } from "@/lib/utils";
 import { Label } from "./ui/label";
-import { FaTimes, FaCloudUploadAlt } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function AuthForm() {
-  const [selectedAvatar, setSelectedAvatar] = useState(null);
   const [role, setRole] = useState("learner");
-  const fileInputRef = useRef(null);
   const [authMode, setAuthMode] = useState("signup");
+  const [formData, setFormData] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
+  const navigate = useNavigate();
+  const handleInputChange = (e) => {
+    const { id, value } = e.target;
+    setFormData({ ...formData, [id]: value });
+  };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (authMode === "signup") {
-      console.log("Signup submitted", {
-        role,
-        avatar: selectedAvatar,
-      });
-    } else {
-      console.log("Login submitted");
-    }
-  };
 
-  const handleAvatarChange = (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setSelectedAvatar(reader.result);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
+    try {
+      if (authMode === "signup") {
+        const formDataToSend = new FormData();
+        formDataToSend.append("username", formData.username);
+        formDataToSend.append("email", formData.email);
+        formDataToSend.append("password", formData.password);
+        formDataToSend.append("role", role);
+        const defaultAvatarUrl = "public/user.png";
+        const response = await fetch(defaultAvatarUrl);
+        const avatarBlob = await response.blob();
+        formDataToSend.append("avatar", avatarBlob, "user.png");
 
-  const triggerFileInput = () => {
-    fileInputRef.current.click();
-  };
+        const apiResponse = await axios.post(
+          "http://localhost:8000/api/v1/users/signup",
+          formDataToSend,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
 
-  const toggleRole = () => {
-    setRole(role === "learner" ? "instructor" : "learner");
-  };
+        console.log("Signup successful:", apiResponse.data);
+        setAuthMode("login");
+      } else if (authMode === "login") {
+        const apiResponse = await axios.post(
+          "http://localhost:8000/api/v1/users/login",
+          {
+            username: formData.username,
+            email: formData.email,
+            password: formData.password,
+          }
+        );
 
-  const removeAvatar = () => {
-    setSelectedAvatar(null);
-    if (fileInputRef.current) {
-      fileInputRef.current.value = "";
+        console.log("Login successful:", apiResponse.data);
+        navigate("/dashboard");
+      }
+    } catch (error) {
+      console.error(
+        `${authMode === "signup" ? "Signup" : "Login"} error:`,
+        error
+      );
     }
   };
 
@@ -61,91 +80,35 @@ export default function AuthForm() {
       </p>
 
       {authMode === "signup" && (
-        <>
-          {/* Role Toggle */}
-          <div className="flex justify-center my-3">
-            <div className="flex items-center bg-gray-100 rounded-full p-1">
-              <button
-                type="button"
-                onClick={toggleRole}
-                className={`px-3 py-1.5 rounded-full transition-all duration-300 ${
-                  role === "learner"
-                    ? "bg-customPurple text-white"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                Learner
-              </button>
-              <button
-                type="button"
-                onClick={toggleRole}
-                className={`px-3 py-1.5 rounded-full transition-all duration-300 ${
-                  role === "instructor"
-                    ? "bg-customPurple text-white"
-                    : "text-gray-600 hover:bg-gray-200"
-                }`}
-              >
-                Instructor
-              </button>
-            </div>
-          </div>
-
-          {/* Avatar Upload */}
-          <div className="mb-4">
-            <Label className="block mb-2 text-center">Profile Picture</Label>
-            <input
-              type="file"
-              ref={fileInputRef}
-              onChange={handleAvatarChange}
-              accept="image/*"
-              className="hidden"
-            />
-            <div
-              className="flex flex-col items-center justify-center border-2 border-dashed rounded-md w-24 h-24 mx-auto cursor-pointer hover:bg-gray-50 transition"
-              onClick={triggerFileInput}
+        <div className="flex justify-center my-3">
+          <div className="flex items-center bg-gray-100 rounded-full p-1">
+            <button
+              type="button"
+              onClick={() => setRole("learner")}
+              className={`px-3 py-1.5 rounded-full transition-all duration-300 ${
+                role === "learner"
+                  ? "bg-customPurple text-white"
+                  : "text-gray-600 hover:bg-gray-200"
+              }`}
             >
-              {selectedAvatar ? (
-                <div className="relative">
-                  <img
-                    src={selectedAvatar}
-                    alt="Selected Avatar"
-                    className="w-24 h-24 rounded-md object-cover"
-                  />
-                  <button
-                    type="button"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      removeAvatar();
-                    }}
-                    className="absolute top-0 right-0 bg-red-500 text-white rounded-full p-1"
-                  >
-                    <FaTimes size={12} />
-                  </button>
-                </div>
-              ) : (
-                <div className="flex flex-col items-center">
-                  <FaCloudUploadAlt className="text-3xl text-gray-400 mb-1" />
-                  <p className="text-gray-600 text-xs">Upload Avatar</p>
-                </div>
-              )}
-            </div>
+              Learner
+            </button>
+            <button
+              type="button"
+              onClick={() => setRole("instructor")}
+              className={`px-3 py-1.5 rounded-full transition-all duration-300 ${
+                role === "instructor"
+                  ? "bg-customPurple text-white"
+                  : "text-gray-600 hover:bg-gray-200"
+              }`}
+            >
+              Instructor
+            </button>
           </div>
-        </>
+        </div>
       )}
 
       <form className="my-6" onSubmit={handleSubmit}>
-        {authMode === "signup" && (
-          <div className="flex flex-col md:flex-row space-y-2 md:space-y-0 md:space-x-2 mb-3">
-            <LabelInputContainer>
-              <Label htmlFor="firstname">First name</Label>
-              <Input id="firstname" placeholder="abc" type="text" />
-            </LabelInputContainer>
-            <LabelInputContainer>
-              <Label htmlFor="lastname">Last name</Label>
-              <Input id="lastname" placeholder="xyz" type="text" />
-            </LabelInputContainer>
-          </div>
-        )}
         {authMode === "login" && (
           <LabelInputContainer className="mb-3">
             <Label htmlFor="username">Username</Label>
@@ -157,12 +120,20 @@ export default function AuthForm() {
                   : "e.g., ProfessionalInstructor"
               }
               type="text"
+              value={formData.username}
+              onChange={handleInputChange}
             />
           </LabelInputContainer>
         )}
         <LabelInputContainer className="mb-3">
           <Label htmlFor="email">Email Address</Label>
-          <Input id="email" placeholder="Edu-Link@fc.com" type="email" />
+          <Input
+            id="email"
+            placeholder="Edu-Link@fc.com"
+            type="email"
+            value={formData.email}
+            onChange={handleInputChange}
+          />
         </LabelInputContainer>
 
         {authMode === "signup" && (
@@ -176,13 +147,21 @@ export default function AuthForm() {
                   : "e.g., ProfessionalInstructor"
               }
               type="text"
+              value={formData.username}
+              onChange={handleInputChange}
             />
           </LabelInputContainer>
         )}
 
         <LabelInputContainer className="mb-3">
           <Label htmlFor="password">Password</Label>
-          <Input id="password" placeholder="••••••••" type="password" />
+          <Input
+            id="password"
+            placeholder="••••••••"
+            type="password"
+            value={formData.password}
+            onChange={handleInputChange}
+          />
         </LabelInputContainer>
 
         <button
