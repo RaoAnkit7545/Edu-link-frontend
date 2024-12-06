@@ -83,7 +83,7 @@ function Firstpage() {
       </div>
 
       <div className="absolute inset-0 z-0">
-        <Meteors number={40} />
+        <Meteors number={30} />
       </div>
 
       <div className="absolute top-5 left-1/2 transform -translate-x-1/2 text-4xl text-white font-Gist z-10">
