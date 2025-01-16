@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import { useState } from "react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { FaArrowRight, FaTimes } from "react-icons/fa";
@@ -9,51 +9,7 @@ import AuthForm from "@/components/Auth-form.jsx";
 gsap.registerPlugin(ScrollTrigger);
 
 function Firstpage() {
-  const textRef = useRef(null);
-  const imageRef = useRef(null);
   const [showSignup, setShowSignup] = useState(false);
-
-  useEffect(() => {
-    const textElement = textRef.current;
-    const imageElement = imageRef.current;
-
-    gsap.fromTo(
-      textElement,
-      { opacity: 0, x: -50 },
-      {
-        opacity: 1,
-        x: 0,
-        duration: 1,
-        scrollTrigger: {
-          trigger: textElement,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-      }
-    );
-
-    // Image animation
-    gsap.fromTo(
-      imageElement,
-      {
-        scale: 1.2,
-        y: -50,
-        clipPath: "inset(10% 0% 0% 0%)",
-      },
-      {
-        scale: 1,
-        y: 0,
-        clipPath: "inset(0% 0% 0% 0%)",
-        duration: 1,
-        scrollTrigger: {
-          trigger: imageElement,
-          start: "top 80%",
-          toggleActions: "play none none reverse",
-        },
-      }
-    );
-  }, []);
-
   const handleSignup = () => {
     setShowSignup(true);
   };
@@ -82,30 +38,43 @@ function Firstpage() {
         />
       </div>
 
+      {/* Meteors */}
       <div className="absolute inset-0 z-0">
-        <Meteors number={30} />
+        <Meteors number={20} />
       </div>
 
-      <div className="absolute top-5 left-1/2 transform -translate-x-1/2 text-4xl text-white font-Gist z-10">
-        <p>Edu-Link</p>
+      <div className="absolute top-4 left-1/2 transform -translate-x-1/2 z-10">
+        <p className="text-2xl sm:text-3xl md:text-4xl text-white font-Gist">
+          Edu-Link
+        </p>
       </div>
 
-      <div className="flex-grow flex items-center pl-12 flex-col mt-2 lg:flex-row relative z-10">
-        <div className="w-full lg:w-1/2 lg:pr-12 mb-8 lg:mb-0">
-          <p
-            ref={textRef}
-            className="text-4xl md:text-5xl lg:text-6xl font-Gist text-white leading-tight text-center lg:text-left mb-8"
-          >
-            Edu-Link:
-            <br />
-            <span className="text-4xl">
+      <div className="flex flex-col lg:flex-row items-center justify-center px-4 sm:px-6 lg:px-12 pt-16 lg:pt-2 relative z-10">
+        {/* Mobile and Tablet screen*/}
+        <div className="w-full flex flex-col items-center lg:hidden">
+          {/* Image */}
+          <div className="w-full max-w-md  ">
+            <img
+              src="pic2.png"
+              alt="Illustration"
+              className="w-full h-auto rounded-lg shadow-xl"
+              style={{
+                maxHeight: "70vh",
+                objectFit: "contain",
+              }}
+            />
+          </div>
+
+          {/* Text Content */}
+          <div className="text-center max-w-md px-4 mb-8">
+            <h1 className="text-3xl sm:text-4xl font-Gist text-white leading-tight mb-2 mt-3">
+              Edu-Link:
+            </h1>
+            <p className="text-xl sm:text-2xl text-white font-Gist mb-8">
               Bringing Learning Opportunities to Every Corner
-            </span>
-          </p>
-
-          <div className="flex justify-center lg:justify-start font-Gist">
+            </p>
             <button
-              className="relative bg-white text-black px-8 py-4 rounded-md shadow-lg flex items-center space-x-4 group overflow-hidden"
+              className="relative bg-white text-black px-6 py-3 rounded-md shadow-lg flex items-center space-x-3 group overflow-hidden font-Gist text-base mx-auto"
               onClick={handleSignup}
             >
               <span className="absolute inset-0 bg-customPurple transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
@@ -116,28 +85,52 @@ function Firstpage() {
             </button>
           </div>
         </div>
+        {/* lappi */}
+        <div className="hidden lg:flex w-full">
+          <div className="w-1/2 pr-8">
+            <div className="text-left">
+              <h1 className="text-5xl lg:text-6xl font-Gist text-white leading-tight  mt-60">
+                Edu-Link:
+              </h1>
+              <p className="text-3xl lg:text-4xl text-white font-Gist mb-8">
+                Bringing Learning Opportunities to Every Corner
+              </p>
+              <button
+                className="relative bg-white text-black px-8 py-4 rounded-md shadow-lg flex items-center space-x-4 group overflow-hidden font-Gist text-lg"
+                onClick={handleSignup}
+              >
+                <span className="absolute inset-0 bg-customPurple transform -translate-x-full group-hover:translate-x-0 transition-transform duration-300"></span>
+                <span className="relative z-10 group-hover:text-white transition-colors duration-300">
+                  Get Started
+                </span>
+                <FaArrowRight className="relative z-10 group-hover:text-white transition-colors duration-300" />
+              </button>
+            </div>
+          </div>
 
-        <div className="w-full lg:w-1/2 flex justify-center overflow-hidden">
-          <img
-            ref={imageRef}
-            src="pic1.png"
-            alt="Illustration"
-            className="w-full rounded-lg transform"
-            style={{
-              height: "calc(100% + 50px)",
-              maxWidth: "100%",
-              clipPath: "inset(10% 0% 0% 0%)",
-            }}
-          />
+          {/* Image */}
+          <div className="w-1/2 px-8">
+            <img
+              src="pic2.png"
+              alt="Illustration"
+              className="w-full h-auto rounded-lg shadow-xl"
+              style={{
+                minWidth: "59vw",
+                objectFit: "cover",
+              }}
+            />
+          </div>
         </div>
       </div>
 
+      {/* Sign Up Modal */}
       {showSignup && (
-        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
-          <div className="relative">
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
+          <div className="relative w-full max-w-md">
             <button
               onClick={handleCloseSignup}
-              className="absolute top-6 right-5 text-customPurple z-50 hover:text-gray-300 transition-colors"
+              className="absolute top-2 right-9 text-customPurple z-50 hover:text-gray-300 transition-colors"
+              aria-label="Close signup form"
             >
               <FaTimes size={24} className="hover:text-purple-500" />
             </button>
